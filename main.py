@@ -12,9 +12,17 @@ hsvVals = {'hmin': 23, 'smin': 67, 'vmin': 151, 'hmax': 30, 'smax': 255, 'vmax':
 
 while True:
     success,img =cap.read()
+    h,w,_=img.shape
     imgColor, mask=myColorFinder.update(img,hsvVals)
+    imgContour,contours=cvzone.findContours(img,mask)
 
-    imgStack=cvzone.stackImages([img,imgColor,mask],2,0.5)
+    if contours:
+        data=contours[0]['center'][0],\
+             h-contours[0]['center'][1],\
+             int(contours[0]['area'])
+        print(data)
+
+    imgStack=cvzone.stackImages([img,imgColor,mask,imgContour],2,0.5)
     cv2.imshow("Image",imgStack)
 
     cv2.waitKey(1)
